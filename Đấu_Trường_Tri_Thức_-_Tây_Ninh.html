@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đấu Trường Tri Thức - Lịch Sử Tây Ninh</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        tnred: '#D97706',
+                        tngold: '#F59E0B',
+                        tnteal: '#0D9488',
+                        tndark: '#1E293B',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #0F172A; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(226, 232, 240, 0.8); }
+        .pulse-btn { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-gradient-to-r from-red-700 via-amber-600 to-amber-700 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchRole('select')">
+                <div class="w-10 h-10 rounded-full bg-white text-red-700 flex items-center justify-center font-black text-xl shadow">
+                    TN
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-wide leading-none uppercase">Đấu Trường Tri Thức</h1>
+                    <p class="text-xs text-amber-200 font-medium">Chuyên đề: Lịch Sử & Văn Hoá Tây Ninh</p>
+                </div>
+            </div>
+
+            <!-- Role Quick Switcher & Status -->
+            <div class="flex items-center space-x-2">
+                <span id="sync-status" class="hidden sm:flex items-center text-xs bg-emerald-500/20 text-emerald-100 border border-emerald-400/40 px-2.5 py-1 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-ping"></span> Đồng bộ Realtime
+                </span>
+                <button onclick="switchRole('select')" class="bg-white/10 hover:bg-white/20 text-xs px-3 py-1.5 rounded-lg border border-white/20 font-medium transition">
+                    <i class="fa-solid fa-arrows-rotate mr-1"></i> Đổi giao diện
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
+        
+        <!-- ================= MÀN HÌNH CHỌN VAI TRÒ (ROLE SELECTOR) ================= -->
+        <div id="screen-role-select" class="max-w-md mx-auto my-12 text-center">
+            <div class="glass-card rounded-2xl p-8 shadow-xl border border-slate-200">
+                <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                    <i class="fa-solid fa-landmark-dome"></i>
+                </div>
+                <h2 class="text-2xl font-black text-slate-800 mb-2">ĐẤU TRƯỜNG TRI THỨC</h2>
+                <p class="text-sm text-slate-500 mb-6">Chào mừng đến với cuộc thi tìm hiểu Lịch sử - Di tích - Con người Tây Ninh</p>
+                
+                <div class="space-y-4">
+                    <button onclick="switchRole('player')" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transform transition active:scale-95 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-user-graduate text-lg"></i>
+                        <span>GIAO DIỆN THÍ SINH (ĐĂNG NHẬP)</span>
+                    </button>
+                    
+                    <button onclick="switchRole('admin')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 px-6 rounded-xl shadow border border-slate-700 transform transition active:scale-95 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-user-gear text-lg text-amber-400"></i>
+                        <span>BẢNG ĐIỀU KHIỂN MC / ADMIN</span>
+                    </button>
+                </div>
+                
+                <div class="mt-8 pt-4 border-t border-slate-100 text-xs text-slate-400">
+                    Mẹo: Mở trang này trên nhiều tab trình duyệt để mô phỏng Admin điều khiển và Thí sinh tham gia thi đấu cùng lúc.
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= GIAO DIỆN THÍ SINH (PLAYER INTERFACE) ================= -->
+        <div id="screen-player" class="hidden">
+            <!-- 1. Đăng nhập thí sinh -->
+            <div id="player-login-box" class="max-w-md mx-auto my-8">
+                <div class="glass-card rounded-2xl p-6 shadow-xl border border-slate-200">
+                    <div class="text-center mb-6">
+                        <span class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full uppercase">Cổng Thí Sinh</span>
+                        <h2 class="text-2xl font-bold text-slate-800 mt-2">Đăng Nhập Dự Thi</h2>
+                        <p class="text-xs text-slate-500">Nhập Tài khoản & Mật khẩu được Ban Tổ Chức cấp</p>
+                    </div>
+
+                    <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tài khoản (Username)</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                    <i class="fa-solid fa-user"></i>
+                                </span>
+                                <input type="text" id="input-username" required placeholder="Ví dụ: TS001" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-800 font-semibold">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mật khẩu (Password)</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                    <i class="fa-solid fa-lock"></i>
+                                </span>
+                                <input type="password" id="input-password" required placeholder="Mật khẩu..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-800 font-semibold">
+                            </div>
+                        </div>
+
+                        <div id="login-error" class="hidden text-xs text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-200">
+                            Tài khoản hoặc mật khẩu không chính xác!
+                        </div>
+
+                        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition transform active:scale-95">
+                            VÀO PHÒNG CHỜ <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </form>
+                    
+                    <div class="mt-4 text-center">
+                        <p class="text-xs text-slate-400">Thí sinh gặp sự cố đăng nhập vui lòng báo MC/Admin.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Phòng chờ Thí sinh (Lobby) -->
+            <div id="player-lobby-box" class="hidden max-w-xl mx-auto my-8">
+                <div class="glass-card rounded-2xl p-8 text-center shadow-xl border border-amber-200">
+                    <div class="w-24 h-24 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl pulse-btn">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase">Đã kết nối thành công</span>
+                    <h2 class="text-2xl font-black text-slate-800 mt-3" id="player-welcome-name">Xin chào Thí sinh</h2>
+                    <p class="text-sm text-slate-500 mt-1">Vui lòng đợi Ban Tổ Chức (MC/Admin) bấm khởi động trò chơi...</p>
+
+                    <div class="my-6 bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center justify-around">
+                        <div>
+                            <div class="text-xs text-slate-400 uppercase font-bold">Mã thí sinh</div>
+                            <div class="text-lg font-bold text-slate-700" id="player-lobby-code">TS001</div>
+                        </div>
+                        <div class="h-8 w-px bg-slate-300"></div>
+                        <div>
+                            <div class="text-xs text-slate-400 uppercase font-bold">Trạng thái</div>
+                            <div class="text-lg font-bold text-emerald-600"><i class="fa-solid fa-check-circle mr-1"></i>Sẵn sàng</div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-200 text-left text-xs text-amber-800 space-y-1">
+                        <p class="font-bold mb-1"><i class="fa-solid fa-circle-info mr-1"></i> Thể lệ cuộc thi:</p>
+                        <p>• Trò chơi gồm <strong>4 Vòng thi</strong>, tổng cộng 40 câu hỏi về Lịch sử Tây Ninh.</p>
+                        <p>• Thời gian suy nghĩ mỗi câu: <strong>15 giây</strong>.</p>
+                        <p>• Trả lời đúng và càng nhanh điểm số sẽ càng cao.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Giao diện Đấu trường / Làm bài thi -->
+            <div id="player-game-box" class="hidden max-w-3xl mx-auto">
+                <!-- Header thông tin vòng thi & điểm -->
+                <div class="glass-card rounded-2xl p-4 mb-4 shadow-md flex flex-wrap justify-between items-center gap-3 border border-slate-200">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-red-600 text-white text-xs font-black px-3 py-1.5 rounded-lg uppercase shadow" id="player-round-badge">
+                            VÒNG 1 / 4
+                        </div>
+                        <div class="text-xs text-slate-500 font-semibold" id="player-round-title">Tây Ninh Khai Mở</div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <span class="text-xs text-slate-400 block font-bold">ĐIỂM SỐ</span>
+                            <span class="text-xl font-black text-amber-600" id="player-score">0</span>
+                        </div>
+                        <div class="w-12 h-12 rounded-full border-4 border-amber-500 flex items-center justify-center font-black text-amber-600 text-lg bg-amber-50" id="player-timer">
+                            15
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thẻ câu hỏi -->
+                <div class="glass-card rounded-2xl p-6 md:p-8 shadow-xl mb-6 border border-slate-200">
+                    <div class="flex justify-between items-center text-xs font-bold text-slate-400 mb-2">
+                        <span id="player-question-number">CÂU HỎI 1 / 10</span>
+                        <span class="text-amber-600"><i class="fa-solid fa-coins mr-1"></i>100 ĐIỂM</span>
+                    </div>
+
+                    <h3 class="text-lg md:text-xl font-bold text-slate-800 leading-relaxed mb-6" id="player-question-text">
+                        Đang tải nội dung câu hỏi...
+                    </h3>
+
+                    <!-- Các phương án lựa chọn -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="player-options-container">
+                        <!-- Nút phương án sẽ được JS render -->
+                    </div>
+                </div>
+
+                <!-- Thông báo đã chọn/kết quả câu hỏi -->
+                <div id="player-feedback" class="hidden p-4 rounded-xl text-center font-bold text-sm shadow">
+                    <!-- Trạng thái sau khi bấm chọn -->
+                </div>
+            </div>
+
+            <!-- 4. Giao diện Kết quả/Bảng xếp hạng Thí sinh -->
+            <div id="player-result-box" class="hidden max-w-2xl mx-auto my-6">
+                <div class="glass-card rounded-2xl p-6 shadow-xl border border-slate-200">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-2 text-3xl">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <h2 class="text-2xl font-black text-slate-800">BẢNG XẾP HẠNG THÍ SINH</h2>
+                        <p class="text-xs text-slate-500" id="player-result-subtitle">Cập nhật điểm số Realtime</p>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-slate-500 uppercase bg-slate-100 border-b">
+                                <tr>
+                                    <th class="px-4 py-3 text-center">Hạng</th>
+                                    <th class="px-4 py-3">Thí Sinh</th>
+                                    <th class="px-4 py-3 text-center">Mã TS</th>
+                                    <th class="px-4 py-3 text-right">Tổng Điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody id="player-leaderboard-body" class="divide-y divide-slate-100">
+                                <!-- Render danh sách xếp hạng -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= GIAO DIỆN ADMIN / MC (ADMIN INTERFACE) ================= -->
+        <div id="screen-admin" class="hidden space-y-6">
+            <!-- Header điều khiển Admin -->
+            <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-xl border border-slate-800">
+                <div class="flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-amber-500 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded uppercase">MC Control Center</span>
+                            <span id="admin-game-status" class="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-0.5 rounded font-medium border border-emerald-500/30">
+                                Trạng thái: PHÒNG CHỜ
+                            </span>
+                        </div>
+                        <h2 class="text-2xl font-black tracking-tight mt-1">BẢNG ĐIỀU KHIỂN GAME SHOW</h2>
+                    </div>
+
+                    <!-- Nút hành động chính của MC -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="adminStartGame()" id="btn-start-game" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black px-5 py-2.5 rounded-xl shadow-lg transition flex items-center space-x-2 pulse-btn">
+                            <i class="fa-solid fa-play"></i>
+                            <span>BẮT ĐẦU GAME</span>
+                        </button>
+                        
+                        <button onclick="adminNextQuestion()" id="btn-next-question" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2.5 rounded-xl transition flex items-center space-x-1">
+                            <span>CÂU TIẾP THEO</span>
+                            <i class="fa-solid fa-forward"></i>
+                        </button>
+
+                        <button onclick="adminRevealAnswer()" id="btn-reveal" class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2.5 rounded-xl transition flex items-center space-x-1">
+                            <i class="fa-solid fa-key"></i>
+                            <span>HIỆN ĐÁP ÁN</span>
+                        </button>
+
+                        <button onclick="adminResetGame()" class="bg-red-600/80 hover:bg-red-600 text-white font-bold px-3 py-2.5 rounded-xl transition" title="Reset Trò Chơi">
+                            <i class="fa-solid fa-power-off"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Thông số hiện tại -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-800 text-center">
+                    <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700">
+                        <span class="text-xs text-slate-400 block font-bold">THÍ SINH ĐÃ VÀO</span>
+                        <span class="text-2xl font-black text-amber-400" id="admin-count-players">0 / 100</span>
+                    </div>
+                    <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700">
+                        <span class="text-xs text-slate-400 block font-bold">VÒNG THI HIỆN TẠI</span>
+                        <span class="text-2xl font-black text-white" id="admin-current-round">1 / 4</span>
+                    </div>
+                    <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700">
+                        <span class="text-xs text-slate-400 block font-bold">CÂU HỎI HIỆN TẠI</span>
+                        <span class="text-2xl font-black text-white" id="admin-current-question">1 / 10</span>
+                    </div>
+                    <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700">
+                        <span class="text-xs text-slate-400 block font-bold">THỜI GIAN CÒN LAI</span>
+                        <span class="text-2xl font-black text-emerald-400" id="admin-timer">15s</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Cột trái: Quản lý 100 Tài khoản thí sinh -->
+                <div class="glass-card rounded-2xl p-5 shadow-lg border border-slate-200 lg:col-span-1">
+                    <div class="flex justify-between items-center mb-4 pb-2 border-b">
+                        <h3 class="font-bold text-slate-800 flex items-center">
+                            <i class="fa-solid fa-users-gear text-amber-600 mr-2"></i> Danh Sách 100 Tài Khoản
+                        </h3>
+                        <button onclick="downloadAccountsCSV()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2.5 py-1 rounded border">
+                            <i class="fa-solid fa-download mr-1"></i> Tải CSV
+                        </button>
+                    </div>
+
+                    <div class="text-xs text-slate-500 mb-3">
+                        Hệ thống tự động khởi tạo 100 tài khoản cấp cho thí sinh (Mật khẩu mặc định: <code class="bg-slate-100 px-1 py-0.5 rounded text-amber-700 font-bold">tn2026</code>).
+                    </div>
+
+                    <!-- Danh sách Scroll 100 TK -->
+                    <div class="max-h-96 overflow-y-auto custom-scrollbar border rounded-xl divide-y text-xs">
+                        <div id="accounts-list-container">
+                            <!-- JS tự render 100 tài khoản ở đây -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột Phải: Xem trực tiếp câu hỏi & Bảng xếp hạng Realtime -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Chi tiết câu hỏi đang chiếu -->
+                    <div class="glass-card rounded-2xl p-6 shadow-lg border border-slate-200">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-amber-600 uppercase" id="admin-preview-round">Vòng 1: Tây Ninh Khai Mở</span>
+                            <span class="text-xs bg-slate-100 text-slate-600 font-bold px-2.5 py-1 rounded">Đáp án đúng sẽ tô xanh</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-800 mb-4" id="admin-preview-question">
+                            Nội dung câu hỏi đang phát tới thí sinh...
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm" id="admin-preview-options">
+                            <!-- Render các tùy chọn xem trước -->
+                        </div>
+                    </div>
+
+                    <!-- Bảng xếp hạng Realtime -->
+                    <div class="glass-card rounded-2xl p-6 shadow-lg border border-slate-200">
+                        <h3 class="font-bold text-slate-800 mb-4 flex items-center justify-between">
+                            <span><i class="fa-solid fa-ranking-star text-amber-500 mr-2"></i> Bảng Xếp Hạng Trực Tiếp</span>
+                            <span class="text-xs text-slate-400 font-normal">Tự động cập nhật</span>
+                        </h3>
+
+                        <div class="overflow-x-auto rounded-xl border border-slate-200">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs text-slate-500 uppercase bg-slate-100 border-b">
+                                    <tr>
+                                        <th class="px-3 py-2 text-center">Hạng</th>
+                                        <th class="px-3 py-2">Mã / Thí Sinh</th>
+                                        <th class="px-3 py-2 text-center">Điểm Sống</th>
+                                        <th class="px-3 py-2 text-center">Đã trả lời</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-leaderboard-body" class="divide-y divide-slate-100 text-xs">
+                                    <!-- Render BXH phía Admin -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-4 text-center border-t border-slate-800 mt-8">
+        <div class="max-w-7xl mx-auto px-4">
+            Đấu Trường Tri Thức - Phiên bản thi trắc nghiệm Lịch sử Tây Ninh 4 Vòng Thi (40 Câu Hỏi) | Thiết kế sẵn sàng chạy tĩnh trên GitHub Pages.
+        </div>
+    </footer>
+
+    <!-- ================= JAVASCRIPT PHẦN XỬ LÝ DỮ LIỆU & ĐỒNG BỘ ================= -->
+    <script>
+        // ================= 1. KHO CÂU HỎI LỊCH SỬ TÂY NINH (4 VÒNG x 10 CÂU = 40 CÂU) =================
+        const GAME_DATA = [
+            {
+                round: 1,
+                roundTitle: "VÒNG 1: TÂY NINH KHAI MỞ & LỊCH SỬ SỚM",
+                questions: [
+                    { q: "Tây Ninh chính thức được lập thành tỉnh vào năm nào dưới thời vua Minh Mạng?", options: ["A. 1832", "B. 1836", "C. 1840", "D. 1845"], answer: 1 },
+                    { q: "Địa danh Tây Ninh có ý nghĩa lịch sử là gì?", options: ["A. Vùng đất bình yên phía Tây", "B. Căn cứ miền Tây", "C. Tây Nam thanh bình", "D. Trấn giữ biên cương phía Tây"], answer: 0 },
+                    { q: "Anh hùng dân tộc nào gắn liền với di tích Lăng Ông tại Suối Vàng (Tây Ninh)?", options: ["A. Trương Định", "B. Huỳnh Công Cẩn", "C. Nguyễn Trung Trực", "D. Võ Duy Dương"], answer: 1 },
+                    { q: "Bộ lạc văn hóa cổ nào từng tồn tại trên địa bàn Tây Ninh thời tiền sử?", options: ["A. Văn hóa Sa Huỳnh", "B. Văn hóa Đông Sơn", "C. Văn hóa Óc Eo", "D. Văn hóa Hòa Bình"], answer: 2 },
+                    { q: "Ngọn núi cao nhất Nam Bộ nằm trên địa bàn tỉnh Tây Ninh là núi nào?", options: ["A. Núi Cậu", "B. Núi Bà Đen", "C. Núi Chứa Chan", "D. Núi Heo"], answer: 1 },
+                    { q: "Núi Bà Đen gắn liền với truyền thuyết về người phụ nữ trung trinh tên là gì?", options: ["A. Lý Thị Thiên Hương", "B. Võ Thị Sáu", "C. Nguyễn Thị Định", "D. Lê Thị Hồng Phong"], answer: 0 },
+                    { q: "Trước khi có tên Tây Ninh, vùng đất này thời chúa Nguyễn thuộc phủ nào?", options: ["A. Phủ Gia Định", "B. Phủ Tân Bình", "C. Phủ Tây Ninh", "D. Phủ Đột Giang"], answer: 0 },
+                    { q: "Sông nào chảy qua tỉnh Tây Ninh đóng vai trò quan trọng trong giao thương lịch sử?", options: ["A. Sông Tiền", "B. Sông Hậu", "C. Sông Vàm Cỏ Đông", "D. Sông Đồng Nai"], answer: 2 },
+                    { q: "Thần phả Tây Ninh ghi nhận Huỳnh Công Cẩn cùng em trai là ai có công mở cõi trấn giữ biên khương?", options: ["A. Huỳnh Công Huy", "B. Huỳnh Công Nghệ", "C. Huỳnh Công Thắng", "D. Huỳnh Công Minh"], answer: 1 },
+                    { q: "Di tích lịch sử Tháp Chót Mạt tại Tây Ninh thuộc nền văn hóa cổ nào?", options: ["A. Chăm Pa", "B. Óc Eo (Phù Nam)", "C. Đại Việt", "D. Chân Lạp"], answer: 1 }
+                ]
+            },
+            {
+                round: 2,
+                roundTitle: "VÒNG 2: KHÁNG CHIẾN CHỐNG PHÁP & CHỐNG MỸ",
+                questions: [
+                    { q: "Căn cứ Trung ương Cục miền Nam được thành lập và đặt tại vùng rừng nào của Tây Ninh?", options: ["A. Tân Biên", "B. Trảng Bàng", "C. Gò Dầu", "D. Bến Cầu"], answer: 0 },
+                    { q: "Căn cứ Trung ương Cục miền Nam còn được gọi với tên thân thương là gì?", options: ["A. Thủ đô gió ngàn", "B. R - Căn cứ cách mạng miền Nam", "C. Chiến khu Đ", "D. Căn cứ Việt Bắc"], answer: 1 },
+                    { q: "Đại hội Đại biểu Đảng bộ tỉnh Tây Ninh lần đầu tiên diễn ra vào thời gian nào?", options: ["A. Năm 1945", "B. Năm 1947", "C. Năm 1950", "D. Năm 1954"], answer: 1 },
+                    { q: "Chiến dịch Junction City (1967) của Mỹ càn quét vào Tây Ninh nhằm mục tiêu chính nào?", options: ["A. Phá hủy Căn cứ Trung ương Cục miền Nam", "B. Chiếm Núi Bà Đen", "C. Kìm kẹp giao thương biên giới", "D. Đánh chiếm Tòa Thánh"], answer: 0 },
+                    { q: "Lực lượng vũ trang Tây Ninh có chiến thắng vang dội tại suối nào năm 1967?", options: ["A. Suối Mây", "B. Suối Ngô", "C. Suối Rơm (Cây Truông)", "D. Suối Đá"], answer: 2 },
+                    { q: "Nữ anh hùng lực lượng vũ trang nhân dân Tây Ninh nổi tiếng với danh hiệu 'Người con gái đất Trảng' là ai?", options: ["A. Huỳnh Thị Mơ", "B. Nguyễn Thị Bé", "C. Đặng Thị Thùy Trang", "D. Lê Thị Dung"], answer: 1 },
+                    { q: "Địa danh nào ở Tây Ninh là nơi thành lập Mặt trận Dân tộc Giải phóng miền Nam Việt Nam (1960)?", options: ["A. Tân Lập (Tân Biên)", "B. Trảng Bàng", "C. Châu Thành", "D. Dương Minh Châu"], answer: 0 },
+                    { q: "Tên chiến khu cách mạng mang tên một nhà lãnh đạo tiền bối ở Tây Ninh là chiến khu nào?", options: ["A. Chiến khu Dương Minh Châu", "B. Chiến khu Trần Hưng Đạo", "C. Chiến khu Đồng Tháp", "D. Chiến khu Bình Giã"], answer: 0 },
+                    { q: "Ngày Tây Ninh hoàn toàn giải phóng kết thúc cuộc kháng chiến chống Mỹ cứu nước là ngày nào?", options: ["A. 26/04/1975", "B. 30/04/1975", "C. 01/05/1975", "D. 19/05/1975"], answer: 1 },
+                    { q: "Đội nữ du kích nào của Tây Ninh nổi tiếng bám thắt lưng địch đánh Mỹ tại Núi Bà Đen?", options: ["A. Nữ du kích Trảng Bàng", "B. Nữ du kích Bến Cầu", "C. Nữ du kích Căn cứ R", "D. Đội nữ du kích Núi Bà"], answer: 3 }
+                ]
+            },
+            {
+                round: 3,
+                roundTitle: "VÒNG 3: DI TÍCH LỊCH SỬ & DÂN TỘC VĂN HÓA",
+                questions: [
+                    { q: "Tòa Thánh Tây Ninh là trung tâm tổ đình của tôn giáo nào thành lập năm 1926?", options: ["A. Phật Giáo Khảm Định", "B. Đạo Cao Đài", "C. Đạo Hòa Hảo", "D. Tịnh Độ Cư Sĩ"], answer: 1 },
+                    { q: "Kiến trúc Tòa Thánh Tây Ninh kết hợp phong cách của những nền văn minh nào?", options: ["A. Đông - Tây kết hợp", "B. Thuần Á Đông", "C. Hi Lạp cổ đại", "D. Kiến trúc Khmer"], answer: 0 },
+                    { q: "Di tích lịch sử Căn cứ Kim Quang nằm ở đâu trong địa bàn Tây Ninh?", options: ["A. Trong lòng núi Bà Đen", "B. Ven sông Vàm Cỏ", "C. Rừng Chàng Riệc", "D. Đồi Ma Thiên Lãnh"], answer: 0 },
+                    { q: "Hồ nước nhân tạo lớn nhất Việt Nam và Đông Nam Á nằm ở Tây Ninh có tên là gì?", options: ["A. Hồ Tri Tôn", "B. Hồ Dầu Tiếng", "C. Hồ Thác Mơ", "D. Hồ Trị An"], answer: 1 },
+                    { q: "Lễ hội Vía Bà Linh Sơn Thánh Mẫu Núi Bà Đen được công nhận là gì?", options: ["A. Di sản văn hóa phi vật thể quốc gia", "B. Kỳ quan thế giới", "C. Di sản thiên nhiên", "D. Di tích khảo cổ"], answer: 0 },
+                    { q: "Món ăn đặc sản Tây Ninh nổi tiếng cả nước được công nhận di sản phi vật thể quốc gia là gì?", options: ["A. Bánh canh Trảng Bàng", "B. Nghề làm Bánh tráng phơi sương Trảng Bàng", "C. Muối ớt Tây Ninh", "D. Cả B và C"], answer: 3 },
+                    { q: "Dân tộc thiểu số có dân số đông và lâu đời tại Tây Ninh là dân tộc nào?", options: ["A. Dân tộc Tày", "B. Dân tộc Khmer", "C. Dân tộc Mường", "D. Dân tộc H'Mông"], answer: 1 },
+                    { q: "Di tích lịch sử Tháp Bình Thạnh tại huyện Trảng Bàng có niên đại khoảng thế kỷ nào?", options: ["A. Thế kỷ VIII - IX", "B. Thế kỷ XII", "C. Thế kỷ XV", "D. Thế kỷ XVIII"], answer: 0 },
+                    { q: "Cặp cửa khẩu quốc tế nổi tiếng kết nối Tây Ninh (Việt Nam) với Campuchia là gì?", options: ["A. Mộc Bài & Xa Mát", "B. Tân Nam & Kà Tum", "C. Bến Cầu & Châu Thành", "D. Hà Tiên & Mộc Bài"], answer: 0 },
+                    { q: "Múa Chhay-dăm là điệu múa dân gian độc đáo của dân tộc nào tại Tây Ninh?", options: ["A. Dân tộc Kinh", "B. Dân tộc Chăm", "C. Dân tộc Khmer", "D. Dân tộc Hoa"], answer: 2 }
+                ]
+            },
+            {
+                round: 4,
+                roundTitle: "VÒNG 4: TÂY NINH HỘI NHẬP & PHÁT TRIỂN",
+                questions: [
+                    { q: "Tỉnh Tây Ninh nằm trong vùng kinh tế trọng điểm nào của Việt Nam?", options: ["A. Vùng kinh tế trọng điểm phía Nam", "B. Đồng bằng sông Cửu Long", "C. Tây Nguyên", "D. Duyên hải Nam Trung Bộ"], answer: 0 },
+                    { q: "Hiện nay tỉnh Tây Ninh có bao nhiêu đơn vị hành chính cấp huyện/thị xã/thành phố?", options: ["A. 7", "B. 8", "C. 9", "D. 10"], answer: 2 },
+                    { q: "Năm 2020, hệ thống cáp treo hiện đại đỉnh Núi Bà Đen đạt kỷ lục Guinness là gì?", options: ["A. Nhà ga cáp treo lớn nhất thế giới", "B. Tuyến cáp dốc nhất", "C. Cáp treo dài nhất", "D. Tuyến cáp cao nhất"], answer: 0 },
+                    { q: "Cây công nghiệp dài ngày truyền thống đóng góp lớn cho kinh tế Tây Ninh là cây gì?", options: ["A. Cà phê & Ca cao", "B. Cao su & Mía đường", "C. Chè & Hạt tiêu", "D. Dừa & Điều"], answer: 1 },
+                    { q: "Tây Ninh giáp với những tỉnh thành nào của Việt Nam?", options: ["A. Bình Dương, Bình Phước, Long An, TP.HCM", "B. Đồng Nai, Tiền Giang, Long An", "C. Đắk Lắk, Lâm Đồng, TP.HCM", "D. Bình Thuận, Bà Rịa Vũng Tàu"], answer: 0 },
+                    { q: "Tượng Phật Bà Tây Bổ Đà Sơn trên đỉnh núi Bà Đen được xác lập kỷ lục gì?", options: ["A. Tượng Phật bằng đồng cao nhất Châu Á nằm trên đỉnh núi", "B. Tượng Phật đá lớn nhất", "C. Tượng Phật ngọc nguyên khối", "D. Tượng Phật bằng vàng lớn nhất"], answer: 0 },
+                    { q: "Đường cao tốc nào đang được quy hoạch triển khai kết nối TP.HCM với Tây Ninh?", options: ["A. Cao tốc TP.HCM - Mộc Bài", "B. Cao tốc Bến Lức - Long Thành", "C. Cao tốc Trung Lương", "D. Cao tốc Dầu Giây"], answer: 0 },
+                    { q: "Địa danh Mộc Bài thuộc huyện nào của tỉnh Tây Ninh?", options: ["A. Huyện Gò Dầu", "B. Huyện Bến Cầu", "C. Huyện Tân Biên", "D. Thị xã Trảng Bàng"], answer: 1 },
+                    { q: "Khu du lịch Quốc gia Núi Bà Đen được định hướng phát triển thành trung tâm gì?", options: ["A. Du lịch tâm linh, văn hóa, sinh thái hàng đầu Nam Bộ", "B. Khu công nghiệp nặng", "C. Nông trường quy mô lớn", "D. Cảng hàng không nội địa"], answer: 0 },
+                    { q: "Định hướng phát triển của Tây Ninh là trở thành mắt xích quan trọng trên hành lang kinh tế nào?", options: ["A. Hành lang kinh tế Xuyên Á", "B. Hành lang Bắc - Nam", "C. Hành lang Đông - Tây", "D. Hành lang ven biển"], answer: 0 }
+                ]
+            }
+        ];
+
+        // ================= 2. QUẢN LÝ TÀI KHOẢN (100 TÀI KHOẢN) =================
+        let accountsDB = [];
+        function generate100Accounts() {
+            accountsDB = [];
+            for (let i = 1; i <= 100; i++) {
+                const code = 'TS' + String(i).padStart(3, '0');
+                accountsDB.push({
+                    id: code,
+                    username: code,
+                    password: 'tn' + 2026,
+                    name: 'Thí sinh ' + String(i).padStart(3, '0'),
+                    score: 0,
+                    answeredCurrent: false,
+                    isOnline: false
+                });
+            }
+        }
+        generate100Accounts();
+
+        // ================= 3. TRẠNG THÁI GAME SHOW (STATE) =================
+        let gameState = {
+            status: 'LOBBY', // LOBBY, IN_GAME, REVEALED, ENDED
+            currentRound: 0, // 0..3
+            currentQuestionIndex: 0, // 0..9
+            timer: 15,
+            leaderboard: {} // { TS001: { score: 100, lastTime: ... } }
+        };
+
+        let currentRole = 'select'; // 'select', 'player', 'admin'
+        let loggedInPlayer = null;
+        let timerInterval = null;
+        let selectedOptionIndex = null;
+
+        // ================= 4. KÊNH ĐỒNG BỘ REALTIME (BROADCAST CHANNEL) =================
+        const channel = new BroadcastChannel('TAY_NINH_GAMESHOW_CHANNEL');
+
+        // Gửi thông điệp đồng bộ
+        function broadcast(type, payload = {}) {
+            channel.postMessage({ type, payload, sender: currentRole });
+        }
+
+        // Lắng nghe thông điệp từ các tab khác
+        channel.onmessage = (event) => {
+            const { type, payload } = event.data;
+
+            if (type === 'SYNC_STATE') {
+                gameState = payload.gameState;
+                if (payload.accounts) accountsDB = payload.accounts;
+                updateUIBasedOnState();
+            }
+            else if (type === 'PLAYER_LOGIN') {
+                const acc = accountsDB.find(a => a.id === payload.playerId);
+                if (acc) acc.isOnline = true;
+                if (currentRole === 'admin') renderAdminAccounts();
+            }
+            else if (type === 'PLAYER_ANSWER') {
+                // Thí sinh nộp đáp án
+                handleAnswerReceived(payload.playerId, payload.questionIndex, payload.optionIndex, payload.timeLeft);
+            }
+            else if (type === 'ADMIN_ACTION') {
+                gameState = payload.gameState;
+                updateUIBasedOnState();
+            }
+        };
+
+        // ================= 5. ĐIỀU HƯỚNG GIAO DIỆN =================
+        function switchRole(role) {
+            currentRole = role;
+            document.getElementById('screen-role-select').classList.add('hidden');
+            document.getElementById('screen-player').classList.add('hidden');
+            document.getElementById('screen-admin').classList.add('hidden');
+
+            if (role === 'select') {
+                document.getElementById('screen-role-select').classList.remove('hidden');
+            } else if (role === 'player') {
+                document.getElementById('screen-player').classList.remove('hidden');
+                if (loggedInPlayer) {
+                    showPlayerScreen('lobby');
+                } else {
+                    showPlayerScreen('login');
+                }
+            } else if (role === 'admin') {
+                document.getElementById('screen-admin').classList.remove('hidden');
+                renderAdminAccounts();
+                renderAdminPreview();
+                renderAdminLeaderboard();
+            }
+            updateUIBasedOnState();
+        }
+
+        function showPlayerScreen(subScreen) {
+            document.getElementById('player-login-box').classList.add('hidden');
+            document.getElementById('player-lobby-box').classList.add('hidden');
+            document.getElementById('player-game-box').classList.add('hidden');
+            document.getElementById('player-result-box').classList.add('hidden');
+
+            if (subScreen === 'login') document.getElementById('player-login-box').classList.remove('hidden');
+            if (subScreen === 'lobby') document.getElementById('player-lobby-box').classList.remove('hidden');
+            if (subScreen === 'game') document.getElementById('player-game-box').classList.remove('hidden');
+            if (subScreen === 'result') document.getElementById('player-result-box').classList.remove('hidden');
+        }
+
+        // ================= 6. XỬ LÝ ĐĂNG NHẬP THÍ SINH =================
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('input-username').value.trim().toUpperCase();
+            const p = document.getElementById('input-password').value.trim();
+
+            const acc = accountsDB.find(a => a.username.toUpperCase() === u && a.password === p);
+
+            if (acc) {
+                loggedInPlayer = acc;
+                acc.isOnline = true;
+                document.getElementById('login-error').classList.add('hidden');
+                document.getElementById('player-welcome-name').innerText = acc.name;
+                document.getElementById('player-lobby-code').innerText = acc.id;
+                
+                broadcast('PLAYER_LOGIN', { playerId: acc.id });
+                showPlayerScreen('lobby');
+                updateUIBasedOnState();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+
+        // ================= 7. ĐỒNG BỘ TRẠNG THÁI & RENDER GIAO DIỆN =================
+        function updateUIBasedOnState() {
+            // Cập nhật đếm số thí sinh online phía Admin
+            const onlineCount = accountsDB.filter(a => a.isOnline).length;
+            document.getElementById('admin-count-players').innerText = `${onlineCount} / 100`;
+
+            // Trạng thái hiển thị phía MC/Admin
+            const statusBadge = document.getElementById('admin-game-status');
+            if (gameState.status === 'LOBBY') {
+                statusBadge.innerText = 'Trạng thái: PHÒNG CHỜ';
+                statusBadge.className = 'bg-amber-500/20 text-amber-400 text-xs px-2.5 py-0.5 rounded font-medium border border-amber-500/30';
+            } else if (gameState.status === 'IN_GAME') {
+                statusBadge.innerText = 'Trạng thái: ĐANG THI ĐẤU';
+                statusBadge.className = 'bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-0.5 rounded font-medium border border-emerald-500/30';
+            } else if (gameState.status === 'REVEALED') {
+                statusBadge.innerText = 'Trạng thái: ĐÃ MỞ ĐÁP ÁN';
+                statusBadge.className = 'bg-sky-500/20 text-sky-400 text-xs px-2.5 py-0.5 rounded font-medium border border-sky-500/30';
+            }
+
+            document.getElementById('admin-current-round').innerText = `${gameState.currentRound + 1} / 4`;
+            document.getElementById('admin-current-question').innerText = `${gameState.currentQuestionIndex + 1} / 10`;
+            document.getElementById('admin-timer').innerText = `${gameState.timer}s`;
+
+            // Cập nhật cho Thí sinh nếu đã đăng nhập
+            if (loggedInPlayer) {
+                if (gameState.status === 'LOBBY') {
+                    showPlayerScreen('lobby');
+                } else if (gameState.status === 'IN_GAME' || gameState.status === 'REVEALED') {
+                    showPlayerScreen('game');
+                    renderPlayerQuestion();
+                } else if (gameState.status === 'ENDED') {
+                    showPlayerScreen('result');
+                    renderPlayerLeaderboard();
+                }
+            }
+
+            if (currentRole === 'admin') {
+                renderAdminPreview();
+                renderAdminLeaderboard();
+            }
+        }
+
+        // Render câu hỏi cho Thí sinh
+        function renderPlayerQuestion() {
+            const currentQ = GAME_DATA[gameState.currentRound].questions[gameState.currentQuestionIndex];
+            const roundObj = GAME_DATA[gameState.currentRound];
+
+            document.getElementById('player-round-badge').innerText = `VÒNG ${gameState.currentRound + 1} / 4`;
+            document.getElementById('player-round-title').innerText = roundObj.roundTitle;
+            document.getElementById('player-question-number').innerText = `CÂU HỎI ${gameState.currentQuestionIndex + 1} / 10`;
+            document.getElementById('player-timer').innerText = gameState.timer;
+            document.getElementById('player-question-text').innerText = currentQ.q;
+            
+            // Tìm điểm hiện tại của thí sinh
+            const myAcc = accountsDB.find(a => a.id === loggedInPlayer.id);
+            document.getElementById('player-score').innerText = myAcc ? myAcc.score : 0;
+
+            const container = document.getElementById('player-options-container');
+            container.innerHTML = '';
+
+            const feedback = document.getElementById('player-feedback');
+
+            currentQ.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-4 rounded-xl border-2 transition font-medium flex items-center justify-between text-sm md:text-base ${
+                    selectedOptionIndex === idx
+                        ? 'border-amber-500 bg-amber-50 text-amber-900 font-bold shadow'
+                        : 'border-slate-200 hover:border-amber-300 bg-white text-slate-700'
+                }`;
+
+                // Nếu đã mở đáp án
+                if (gameState.status === 'REVEALED') {
+                    if (idx === currentQ.answer) {
+                        btn.className = 'w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 font-bold flex items-center justify-between';
+                    } else if (selectedOptionIndex === idx && idx !== currentQ.answer) {
+                        btn.className = 'w-full text-left p-4 rounded-xl border-2 border-red-500 bg-red-50 text-red-900 font-bold flex items-center justify-between';
+                    }
+                }
+
+                btn.disabled = (selectedOptionIndex !== null) || (gameState.status === 'REVEALED') || (gameState.timer === 0);
+                btn.onclick = () => submitPlayerAnswer(idx);
+
+                btn.innerHTML = `
+                    <span>${opt}</span>
+                    ${selectedOptionIndex === idx ? '<i class="fa-solid fa-circle-check text-amber-600"></i>' : ''}
+                    ${gameState.status === 'REVEALED' && idx === currentQ.answer ? '<i class="fa-solid fa-check text-emerald-600 text-lg"></i>' : ''}
+                `;
+                container.appendChild(btn);
+            });
+
+            // Phản hồi chọn
+            if (selectedOptionIndex !== null) {
+                feedback.classList.remove('hidden');
+                if (gameState.status === 'REVEALED') {
+                    if (selectedOptionIndex === currentQ.answer) {
+                        feedback.className = 'p-3 rounded-xl text-center font-bold text-sm bg-emerald-100 text-emerald-800 border border-emerald-300';
+                        feedback.innerHTML = '<i class="fa-solid fa-face-smile mr-1"></i> Chính xác! Bạn đã nhận được điểm thưởng.';
+                    } else {
+                        feedback.className = 'p-3 rounded-xl text-center font-bold text-sm bg-red-100 text-red-800 border border-red-300';
+                        feedback.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1"></i> Tiếc quá! Đáp án chưa chính xác.';
+                    }
+                } else {
+                    feedback.className = 'p-3 rounded-xl text-center font-bold text-sm bg-amber-100 text-amber-800 border border-amber-200';
+                    feedback.innerHTML = '<i class="fa-solid fa-clock mr-1"></i> Đã ghi nhận câu trả lời! Đang chờ MC mở đáp án...';
+                }
+            } else {
+                feedback.classList.add('hidden');
+            }
+        }
+
+        // Thí sinh bấm chọn đáp án
+        function submitPlayerAnswer(optionIdx) {
+            if (selectedOptionIndex !== null || gameState.status !== 'IN_GAME') return;
+            selectedOptionIndex = optionIdx;
+
+            broadcast('PLAYER_ANSWER', {
+                playerId: loggedInPlayer.id,
+                questionIndex: gameState.currentQuestionIndex,
+                optionIndex: optionIdx,
+                timeLeft: gameState.timer
+            });
+
+            handleAnswerReceived(loggedInPlayer.id, gameState.currentQuestionIndex, optionIdx, gameState.timer);
+            renderPlayerQuestion();
+        }
+
+        // Tính điểm khi nhận câu trả lời
+        function handleAnswerReceived(playerId, qIndex, optionIdx, timeLeft) {
+            const acc = accountsDB.find(a => a.id === playerId);
+            if (!acc) return;
+
+            const currentQ = GAME_DATA[gameState.currentRound].questions[qIndex];
+            acc.answeredCurrent = true;
+
+            if (optionIdx === currentQ.answer) {
+                // Điểm = 100 + thời gian còn lại x 2
+                const addScore = 100 + (timeLeft * 2);
+                acc.score += addScore;
+            }
+
+            if (currentRole === 'admin') renderAdminLeaderboard();
+        }
+
+        // ================= 8. ADMIN QUẢN LÝ & ĐIỀU KHIỂN =================
+        function adminStartGame() {
+            gameState.status = 'IN_GAME';
+            gameState.currentRound = 0;
+            gameState.currentQuestionIndex = 0;
+            gameState.timer = 15;
+            selectedOptionIndex = null;
+            resetAnswersState();
+
+            startTimer();
+            broadcastState();
+        }
+
+        function adminNextQuestion() {
+            selectedOptionIndex = null;
+            resetAnswersState();
+
+            if (gameState.currentQuestionIndex < 9) {
+                gameState.currentQuestionIndex++;
+                gameState.status = 'IN_GAME';
+                gameState.timer = 15;
+                startTimer();
+            } else {
+                // Hết 10 câu -> Chuyển vòng
+                if (gameState.currentRound < 3) {
+                    gameState.currentRound++;
+                    gameState.currentQuestionIndex = 0;
+                    gameState.status = 'IN_GAME';
+                    gameState.timer = 15;
+                    startTimer();
+                } else {
+                    // Kết thúc Game
+                    gameState.status = 'ENDED';
+                    clearInterval(timerInterval);
+                }
+            }
+            broadcastState();
+        }
+
+        function adminRevealAnswer() {
+            gameState.status = 'REVEALED';
+            clearInterval(timerInterval);
+            broadcastState();
+        }
+
+        function adminResetGame() {
+            if (confirm("Bạn có chắc chắn muốn ĐẶT LẠI toàn bộ trò chơi về Phòng chờ?")) {
+                gameState.status = 'LOBBY';
+                gameState.currentRound = 0;
+                gameState.currentQuestionIndex = 0;
+                gameState.timer = 15;
+                selectedOptionIndex = null;
+                clearInterval(timerInterval);
+                accountsDB.forEach(a => a.score = 0);
+                broadcastState();
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (gameState.timer > 0 && gameState.status === 'IN_GAME') {
+                    gameState.timer--;
+                    broadcastState();
+                } else if (gameState.timer === 0 && gameState.status === 'IN_GAME') {
+                    gameState.status = 'REVEALED';
+                    clearInterval(timerInterval);
+                    broadcastState();
+                }
+            }, 1000);
+        }
+
+        function resetAnswersState() {
+            accountsDB.forEach(a => a.answeredCurrent = false);
+        }
+
+        function broadcastState() {
+            updateUIBasedOnState();
+            broadcast('ADMIN_ACTION', { gameState, accounts: accountsDB });
+        }
+
+        // Render xem trước nội dung bên Admin
+        function renderAdminPreview() {
+            const currentQ = GAME_DATA[gameState.currentRound].questions[gameState.currentQuestionIndex];
+            const roundObj = GAME_DATA[gameState.currentRound];
+
+            document.getElementById('admin-preview-round').innerText = roundObj.roundTitle;
+            document.getElementById('admin-preview-question').innerText = `Câu ${gameState.currentQuestionIndex + 1}: ${currentQ.q}`;
+
+            const container = document.getElementById('admin-preview-options');
+            container.innerHTML = '';
+
+            currentQ.options.forEach((opt, idx) => {
+                const div = document.createElement('div');
+                const isCorrect = idx === currentQ.answer;
+                div.className = `p-3 rounded-xl border flex items-center justify-between ${
+                    isCorrect ? 'bg-emerald-50 border-emerald-400 font-bold text-emerald-900' : 'bg-slate-50 border-slate-200 text-slate-700'
+                }`;
+                div.innerHTML = `
+                    <span>${opt}</span>
+                    ${isCorrect ? '<span class="text-xs bg-emerald-600 text-white px-2 py-0.5 rounded">ĐÁP ÁN ĐÚNG</span>' : ''}
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Render danh sách 100 Tài khoản bên Admin
+        function renderAdminAccounts() {
+            const container = document.getElementById('accounts-list-container');
+            container.innerHTML = '';
+
+            accountsDB.forEach(acc => {
+                const item = document.createElement('div');
+                item.className = 'p-2.5 flex items-center justify-between hover:bg-slate-50 transition';
+                item.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 rounded-full ${acc.isOnline ? 'bg-emerald-500' : 'bg-slate-300'}" title="${acc.isOnline ? 'Trực tuyến' : 'Ngoại tuyến'}"></span>
+                        <span class="font-bold text-slate-800">${acc.id}</span>
+                        <span class="text-slate-400">| Pass: ${acc.password}</span>
+                    </div>
+                    <span class="font-semibold text-amber-600">${acc.score} đ</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Render Bảng xếp hạng
+        function renderAdminLeaderboard() {
+            const tbody = document.getElementById('admin-leaderboard-body');
+            tbody.innerHTML = '';
+
+            // Sắp xếp danh sách theo điểm từ cao đến thấp
+            const sorted = [...accountsDB].sort((a, b) => b.score - a.score).slice(0, 10);
+
+            sorted.forEach((acc, index) => {
+                const tr = document.createElement('tr');
+                tr.className = index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50';
+                tr.innerHTML = `
+                    <td class="px-3 py-2 text-center font-bold ${index < 3 ? 'text-amber-600 text-sm' : 'text-slate-500'}">
+                        ${index === 0 ? '<i class="fa-solid fa-crown text-amber-500"></i>' : index + 1}
+                    </td>
+                    <td class="px-3 py-2 font-bold text-slate-800">${acc.id} - ${acc.name}</td>
+                    <td class="px-3 py-2 text-center font-black text-amber-600">${acc.score}</td>
+                    <td class="px-3 py-2 text-center">
+                        ${acc.answeredCurrent ? '<span class="text-emerald-600 font-bold"><i class="fa-solid fa-check"></i> Đã chọn</span>' : '<span class="text-slate-400">Đang nghĩ...</span>'}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderPlayerLeaderboard() {
+            const tbody = document.getElementById('player-leaderboard-body');
+            tbody.innerHTML = '';
+
+            const sorted = [...accountsDB].sort((a, b) => b.score - a.score).slice(0, 20);
+
+            sorted.forEach((acc, index) => {
+                const tr = document.createElement('tr');
+                const isMe = loggedInPlayer && loggedInPlayer.id === acc.id;
+                tr.className = isMe ? 'bg-amber-100/80 font-bold text-amber-900' : (index % 2 === 0 ? 'bg-white' : 'bg-slate-50');
+                tr.innerHTML = `
+                    <td class="px-4 py-3 text-center font-bold ${index < 3 ? 'text-amber-600' : 'text-slate-500'}">
+                        ${index === 0 ? '<i class="fa-solid fa-trophy text-amber-500 text-lg"></i>' : index + 1}
+                    </td>
+                    <td class="px-4 py-3 font-semibold">${acc.name} ${isMe ? '(Tôi)' : ''}</td>
+                    <td class="px-4 py-3 text-center font-mono">${acc.id}</td>
+                    <td class="px-4 py-3 text-right font-black text-amber-600 text-base">${acc.score}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ================= 9. XUẤT FILE CSV 100 TÀI KHOẢN =================
+        function downloadAccountsCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,STT,MaTaiKhoan,MatKhau,TenHienThi\n";
+            accountsDB.forEach((acc, idx) => {
+                csvContent += `${idx + 1},${acc.username},${acc.password},${acc.name}\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Danh_Sach_100_Tai_Khoan_Tay_Ninh_Gameshow.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Tự động khởi tạo giao diện
+        window.onload = function() {
+            switchRole('select');
+        };
+    </script>
+</body>
+</html>
